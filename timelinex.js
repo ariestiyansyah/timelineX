@@ -78,3 +78,44 @@ if (Meteor.isServer) {
     return LinksCollection.find();
   });
 }
+
+if (Meteor.isClient) {
+  Meteor.subscribe('tasks');
+  Meteor.subscribe('links');
+
+  Template.navigation.events({
+    'click .logout': function(event){
+      event.preventDefault();
+      Meteor.logout();
+    }
+  });
+
+  Template.masuk.events({
+    'submit form': function(event){
+      event.preventDefault();
+      var email = $('[name=email]').val();
+      var password = $('[name=password]').val();
+      Meteor.loginWithPassword(email, password, function(error) {
+        if(error) {
+          console.log(error.reason);
+        } else {
+          Router.go("/");
+        }
+      });
+    }
+  });
+
+  Template.navigation.helpers({
+    isActiveRoute:function(page){
+      if (page == Router.current().route.getName()) {
+        return 'active';
+      }
+    }
+  });
+
+  Template.beranda.events({
+    'focus #date_start': function(e, template){
+      var f = Template.instance().$('#date_start');
+    }
+  })
+}
